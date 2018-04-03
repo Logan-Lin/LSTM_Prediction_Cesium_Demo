@@ -1,0 +1,15 @@
+.table-container {
+    width: 100%;
+}
+
+.table-row {
+    width: 100%;
+}
+
+#first-level-select {
+    width: 50%;
+}
+
+#second-level-select {
+    width: 50%;
+}
