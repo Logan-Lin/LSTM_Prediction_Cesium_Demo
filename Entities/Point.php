@@ -36,11 +36,11 @@ class Point
         {
             $string = $string . ", label: {
                 text: '$this->name', 
-                font: '10pt Times New Roman',
+                font: '13pt Times New Roman',
                 style: Cesium.LabelStyle.FILL_AND_OUTLINE, 
-                outlineWidth : 2,
+                outlineWidth : 3,
                 verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
-                pixelOffset : new Cesium.Cartesian2(0, -20)
+                pixelOffset : new Cesium.Cartesian2(0, -8)
             }";
         }
         $string = $string . "});";

@@ -66,7 +66,7 @@ class Utils
             $index = $n + 1;
             $point_color = $color === null ? self::getRgbArray($index, $pointNum) : $color;
 
-            $size = 6;
+            $size = 8;
             if ($prefix == "Staypoint-") {
                 $size = 30;
             }
