@@ -20,7 +20,7 @@
         <script>
             var viewer = new Cesium.Viewer('cesiumContainer');
 
-            var wyoming = viewer.entities.add({
+            viewer.entities.add({
                 name : 'Wyoming',
                 polygon : {
                     hierarchy : Cesium.Cartesian3.fromDegreesArray([

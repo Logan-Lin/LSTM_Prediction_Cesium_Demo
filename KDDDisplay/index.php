@@ -23,17 +23,22 @@
         <?php
             include "../Entities/Utils.php";
             
-            $sql = "select stationName as name, latitude, longitude from KDD.bj_grid_location";
-            $coordiantes = Utils::sqlToCoordinates($sql);
-            $result = Utils::getSqlResult($sql);
-            $nameArray = array();
-            if ($result->num_rows > 0){
-                while ($row = $result->fetch_assoc()) {
-                    $nameArray[] = $row["name"];
-                }
-            }
+//            $sql = "select stationName as name, latitude, longitude from KDD.bj_grid_location";
+        $sql1 = "select latitude, longitude from KDD.bj_station_location";
+        $sql2 = "select stationName as name, latitude, longitude from KDD.bj_grid_location";
+            $coordiantes = Utils::sqlToCoordinates($sql1);
+            $coordinates2 = Utils::sqlToCoordinates($sql2);
+//            $result = Utils::getSqlResult($sql);
+//            $nameArray = array();
+//            if ($result->num_rows > 0){
+//                while ($row = $result->fetch_assoc()) {
+//                    $nameArray[] = $row["name"];
+//                }
+//            }
             $color = array(1, 0, 0);
-            echo Utils::coor2PointString($coordiantes, '', false, $color, $nameArray, 0);
+            $color2 = array(0, 1, 1);
+            echo Utils::coor2PointString($coordiantes, '', false, $color, null, 0);
+            echo Utils::coor2PointString($coordinates2, '', false, $color2, null, 0);
         ?>
         <script>
             viewer.zoomTo(viewer.entities);
