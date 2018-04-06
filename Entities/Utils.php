@@ -1,6 +1,8 @@
 <?php
 include "../Entities/Point.php";
 include "../Entities/Line.php";
+include "../Entities/AQDescription.php";
+include "../Entities/MeoDescription.php";
 
 class Utils
 {
@@ -58,7 +60,8 @@ class Utils
     // $prefix is the prefix used in points' name. Points' names will be $prefix with points' indexes.
     // $label is a boolean value to determine whether to display the points' names.
     // $color is used to assign points' color. Set to null to autoassign it.
-    public static function coor2PointString($coorArray, $prefix, $label, $color=null, $labelArray=null, $offset=0) {
+    public static function coor2PointString($coorArray, $prefix, $label, $color=null,
+                                            $labelArray=null, $offset=0, $descriptionArray=null) {
         $string = "";
         for ($n = 0; $n < count($coorArray); $n++) {
             $pointNum = count($coorArray);
@@ -71,13 +74,9 @@ class Utils
                 $size = 30;
             }
 
-            if ($labelArray !== null) {
-                $point = new Point($labelArray[$n], $offset + $row[0], $offset + $row[1], $size,
-                    $point_color, $label);
-            } else {
-                $point = new Point("{$prefix}{$index}", $offset + $row[0], $offset + $row[1], $size,
-                    $point_color, $label);
-            }
+            $point = new Point($labelArray !== null ? $labelArray[$n] : "{$prefix}{$index}",
+                $offset + $row[0], $offset + $row[1],
+                $size, $point_color, $label, $descriptionArray !== null ? $descriptionArray[$n] : "");
             
             $string .= $point->toCesiumScript();
         }
@@ -215,6 +214,40 @@ class Utils
             $centers[] = self::getLocationCenter($level, $location_id);
         }
         return $centers;
+    }
+
+    public static function getAQDescriptions($stationName, $start, $end) {
+        $sql = "select * from KDD.bj_17_18_aq where 
+                stationid like '{$stationName}' and utctime > '{$start} 00:00:00'
+                and utctime < '{$end} 23:59:59'";
+        $result = self::getSqlResult($sql);
+        $descriptionHtml = "";
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $description = new AQDescription($row["utctime"], $row["PM2.5"],
+                    $row["PM10"], $row["NO2"], $row["CO"], $row["O3"], $row["SO2"]);
+                $descriptionHtml .= $description->toHTML();
+            }
+        }
+        $result->close();
+        return $descriptionHtml;
+    }
+
+    public static function getMeoDescriptions($gridName, $start, $end) {
+        $sql = "select * from KDD.bj_historical_meo_grid where 
+                stationName like '{$gridName}' and utctime > '{$start} 00:00:00'
+                and utctime < '{$end} 23:59:59'";
+        $result = self::getSqlResult($sql);
+        $descriptionHTML = "";
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $description = new MeoDescription($row["utctime"], $row["temperature"],
+                    $row["pressure"], $row["humidity"], $row["wind_direction"], $row["wind_speed"]);
+                $descriptionHTML .= $description->toHTML();
+            }
+        }
+        $result->close();
+        return $descriptionHTML;
     }
 
     // Query an SQL statement and return a n*2 matrix with each row corresponding (latitude, longitude).
